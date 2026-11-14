@@ -105,6 +105,24 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 .settings .btn{height:47px;font-size:12px;font-weight:800;margin-top:2px}
 .settings .status{min-height:0;margin-top:12px;padding:9px 11px;border-radius:9px;background:#f7f8fa;border:1px solid #edf0f4;color:#65748a;line-height:1.5;overflow-wrap:anywhere}
 .settings .hint{margin-top:13px;line-height:1.65}
+
+/* Polished save and reset controls */
+.design-actions{margin-top:22px;padding:17px 15px 14px;border:1px solid #e2e8f0;border-radius:14px;background:linear-gradient(145deg,#fbfcfe,#f5f7fb);box-shadow:0 3px 10px #14253e08}
+.design-actions-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.design-actions-title{font:800 9px Manrope,sans-serif;letter-spacing:1.25px;color:#9a7936}
+.design-actions-note{font:500 10px Inter,sans-serif;color:#8793a5;text-align:right}
+.design-actions-buttons{display:grid;grid-template-columns:1.15fr 1fr;gap:9px}
+.design-actions-buttons .btn{height:44px;margin:0;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;font:700 11px Inter,sans-serif;white-space:nowrap;transition:transform .16s,box-shadow .16s,background .16s}
+.design-actions-buttons .btn:hover{filter:none;transform:translateY(-1px);box-shadow:0 5px 12px #14253e18}
+.design-actions-buttons .save-btn{background:linear-gradient(135deg,#14253e,#203b5e);color:#fff;box-shadow:0 3px 8px #14253e20}
+.design-actions-buttons .reset-btn{background:#fff;color:#34465f;border:1px solid #d9e1eb}
+.design-actions-buttons .reset-btn:hover{background:#f8fafc}
+.design-actions-buttons .action-icon{font-size:15px;line-height:1}
+.save-status{display:flex;align-items:flex-start;gap:8px;margin-top:12px;padding:10px 11px;border-radius:9px;background:#fff;border:1px solid #e8edf3;color:#7b8798;font:500 10px/1.5 Inter,sans-serif}
+.save-status:before{display:none!important;content:none!important}
+.save-status .status-dot{width:7px;height:7px;flex:0 0 7px;margin-top:3px;border-radius:50%;background:#9aa7b7}
+@media(max-width:780px){.design-actions{padding:14px 12px}.design-actions-buttons{grid-template-columns:1fr 1fr}.design-actions-buttons .btn{font-size:10px}}
+
 .settings .hint:before{content:"HOW IT WORKS";display:block;color:#9a7936;font:800 9px Manrope,sans-serif;letter-spacing:1.15px;margin-bottom:5px}
 .shell>section.panel:not(.settings){padding:26px}
 .previewhead{margin-bottom:18px}
@@ -166,11 +184,14 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <div class="field"><label for="colFooter">Footer background</label><div class="colorinput"><input id="colFooter" type="color" value="#ffffff"><input id="colFooterHex" type="text" value="#FFFFFF" maxlength="7"></div></div>
 
 <div class="field"><label for="colFooterText">Powered by text color</label><div class="colorinput"><input id="colFooterText" type="color" value="#14253e"><input id="colFooterTextHex" type="text" value="#14253E" maxlength="7"></div></div>
-<div class="row" style="margin-top:10px">
-<button class="btn" id="saveDesign" type="button">Save Design</button>
-<button class="btn secondary" id="resetDesign" type="button">Back to Default</button>
+<div class="design-actions">
+<div class="design-actions-head"><span class="design-actions-title">YOUR DESIGN</span><span class="design-actions-note">Keep your setup for next time</span></div>
+<div class="design-actions-buttons">
+<button class="btn save-btn" id="saveDesign" type="button"><span class="action-icon">✓</span><span>Save design</span></button>
+<button class="btn reset-btn" id="resetDesign" type="button"><span class="action-icon">↺</span><span>Back to default</span></button>
 </div>
-<p class="hint" id="saveStatus" aria-live="polite">Your saved design will be restored automatically next time you open Sticker Studio.</p>
+<div class="save-status" id="saveStatus" role="status" aria-live="polite"><span class="status-dot"></span><span>Your saved design will be restored automatically next time you open Sticker Studio.</span></div>
+</div>
 </div>
 </section>
 <section class="panel">
