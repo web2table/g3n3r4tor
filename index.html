@@ -97,13 +97,12 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <script>
 (() => {
 const $=id=>document.getElementById(id);
-function validUrl(){const v=$('url').value.trim();if(!v)return '';try{const u=new URL(/^https?:\\/\\//i.test(v)?v:'https://'+v);return u.href}catch{return ''}}
+function validUrl(){const v=$('url').value.trim();if(!v)return '';try{const hasProtocol=v.toLowerCase().startsWith('http://')||v.toLowerCase().startsWith('https://');const u=new URL(hasProtocol?v:'https://'+v);return (u.protocol==='http:'||u.protocol==='https:')?u.href:''}catch{return ''}}
 function render(){
  const url=validUrl(),qr=$('qrcode');qr.innerHTML='';
  if(!url){$('status').textContent='Enter a valid restaurant storefront URL.';return}
  if(typeof QRCode==='undefined'){$('status').textContent='QR library did not load. Check your internet connection and reload.';return}
- new QRCode(qr,{text:url,width:360,height:360,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
- $('status').textContent='QR code generated for '+url;
+ try{new QRCode(qr,{text:url,width:360,height:360,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});if(!qr.querySelector('canvas')&&!qr.querySelector('img'))throw Error('QR library did not create an image.');$('status').textContent='QR code generated for '+url}catch(e){$('status').textContent='QR generation failed: '+e.message;}
 }
 function qrImageData(){const c=$('qrcode').querySelector('canvas');if(c)return c.toDataURL('image/png');const im=$('qrcode').querySelector('img');if(im)return im.src;throw Error('QR code is not ready.')}
 function svgString(){
