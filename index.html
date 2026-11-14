@@ -153,6 +153,20 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
  .exports .btn{height:44px}
 }
 
+
+/* Layout repair: keep sticker color controls within the settings panel */
+.settings{min-width:0;width:100%}
+.settings .colors{display:grid;grid-template-columns:minmax(0,1fr);gap:0;width:100%;min-width:0}
+.settings .colors>.field{width:100%;min-width:0;margin:0 0 15px}
+.settings .colors>.field label{display:block;width:100%;line-height:1.35;overflow-wrap:break-word}
+.settings .colors .colorinput{display:flex;width:100%;min-width:0;height:42px;gap:8px;padding:5px 8px}
+.settings .colors .colorinput input[type=color]{width:26px;height:26px;flex:0 0 26px}
+.settings .colors .colorinput input[type=text]{display:block;flex:1 1 auto;width:0;min-width:0;height:30px!important;padding:0 5px!important;font-size:12px!important}
+.settings .design-actions{width:100%;min-width:0;margin-top:10px}
+.settings .design-actions-buttons{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+.settings .design-actions-buttons .btn{min-width:0;padding:0 8px;white-space:normal}
+@media(max-width:420px){.settings .design-actions-buttons{grid-template-columns:1fr}.settings .design-actions-head{align-items:flex-start;flex-direction:column;gap:4px}}
+
 </style>
 </head>
 <body>
