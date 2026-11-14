@@ -65,6 +65,16 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 @media(max-width:780px){.top{height:56px;padding:0 14px}.shell{grid-template-columns:1fr;margin:16px auto;gap:16px}.stage{min-height:auto;padding:16px}.panel{padding:19px}.settings:before{margin-bottom:9px}}
 
 
+/* Separate framed NFC and QR action containers */
+.action-card{width:100%;height:100%;min-height:0;border:2px solid #14253e;border-radius:20px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 8px;gap:2px}
+.nfc-card .phone-icon{width:54%;height:48%;max-width:108px;max-height:145px;flex:0 1 auto}
+.qr-card .qrwrap{width:100%;flex:0 1 auto;min-height:0}
+.qr-card .qrwrap #qrcode{width:145px;height:145px;min-width:0;min-height:0;flex:0 1 145px}
+.qr-card .qrwrap canvas,.qr-card .qrwrap img{width:145px!important;height:145px!important;max-width:100%;object-fit:contain}
+.qr-card .action-label{margin-top:7px}
+.tap-action,.qr-action{padding:0}
+@media(max-width:780px){.action-card{border-radius:15px;padding:8px 5px}.qr-card .qrwrap #qrcode{width:min(100%,125px);height:auto;aspect-ratio:1;flex-basis:125px}.qr-card .qrwrap canvas,.qr-card .qrwrap img{width:125px!important;height:125px!important}.nfc-card .phone-icon{width:58%;max-height:110px}}
+
 /* Studio UI polish — controls and workspace */
 .top{position:sticky;top:0;z-index:20;height:68px;padding-inline:max(28px,calc((100vw - 1320px)/2));}
 .top b{font-size:13px;font-weight:800}
@@ -127,12 +137,12 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <div class="stage"><div class="sticker" id="sticker">
 <div class="menu-header"><div class="menu-title">MENU</div><div class="menu-subtitle">VIEW MENU &amp; SELF-ORDER</div></div>
 <div class="action-area">
-<div class="tap-action">
+<div class="tap-action"><div class="action-card nfc-card">
 <svg class="phone-icon" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="37" y="9" width="46" height="102" rx="8"/><path d="M51 22h18M56 96h8"/><path d="M48 47c7-7 17-7 24 0M42 40c11-12 25-12 36 0M55 55c3-3 7-3 10 0"/></svg>
 <div class="action-label">TAP PHONE</div><div class="action-caption">NFC</div>
-</div>
+</div></div>
 <div class="or-divider">OR</div>
-<div class="qr-action"><div class="qrwrap"><div id="qrcode" aria-label="QR code"></div></div><div class="action-label">SCAN QR CODE</div></div>
+<div class="qr-action"><div class="action-card qr-card"><div class="qrwrap"><div id="qrcode" aria-label="QR code"></div></div><div class="action-label">SCAN QR CODE</div></div></div>
 </div>
 <div class="sticker-footer">POWERED BY WEB<span class="two">2</span>TABLE</div>
 </div></div>
@@ -154,7 +164,7 @@ function qrImageData(){const c=$('qrcode').querySelector('canvas');if(c)return c
 function svgString(){
  const url=validUrl();if(!url)throw Error('Enter a valid storefront URL first.');
  const qr=qrImageData();
- return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="3in" height="3in" viewBox="0 0 900 900"><rect width="900" height="900" fill="#ffffff"/><rect x="10" y="10" width="880" height="880" rx="38" fill="#ffffff" stroke="#14253e" stroke-width="10"/><path d="M15 48Q15 15 48 15H852Q885 15 885 48V270H15Z" fill="#14253e"/><text x="450" y="145" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="92" font-weight="800" letter-spacing="3" fill="#ffffff">MENU</text><text x="450" y="205" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="700" letter-spacing="2" fill="#ffffff">VIEW MENU &amp; SELF-ORDER</text><g fill="none" stroke="#14253e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><rect x="125" y="350" width="145" height="300" rx="22"/><path d="M166 385h63M183 615h30M157 470q41-42 82 0M143 448q55-60 110 0M178 493q13-13 26 0"/></g><text x="198" y="710" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="28" font-weight="800" fill="#14253e">TAP PHONE</text><text x="198" y="746" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="22" fill="#64748b">NFC</text><text x="450" y="535" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="30" font-weight="800" fill="#14253e">OR</text><image href="'+qr+'" x="535" y="350" width="245" height="245" preserveAspectRatio="none"/><text x="657" y="645" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="26" font-weight="800" fill="#14253e">SCAN QR CODE</text><path d="M20 790H880" stroke="#e5e7eb" stroke-width="2"/><text x="450" y="842" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="800" letter-spacing="2" fill="#14253e">POWERED BY WEB<tspan fill="#c43b3b">2</tspan>TABLE</text></svg>';
+ return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="3in" height="3in" viewBox="0 0 900 900"><rect width="900" height="900" fill="#ffffff"/><rect x="10" y="10" width="880" height="880" rx="38" fill="#ffffff" stroke="#14253e" stroke-width="10"/><path d="M15 48Q15 15 48 15H852Q885 15 885 48V270H15Z" fill="#14253e"/><text x="450" y="145" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="92" font-weight="800" letter-spacing="3" fill="#ffffff">MENU</text><text x="450" y="205" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="700" letter-spacing="2" fill="#ffffff">VIEW MENU &amp; SELF-ORDER</text><rect x="70" y="320" width="300" height="370" rx="28" fill="#ffffff" stroke="#14253e" stroke-width="6"/><rect x="530" y="320" width="300" height="370" rx="28" fill="#ffffff" stroke="#14253e" stroke-width="6"/><g fill="none" stroke="#14253e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><rect x="125" y="350" width="145" height="300" rx="22"/><path d="M166 385h63M183 615h30M157 470q41-42 82 0M143 448q55-60 110 0M178 493q13-13 26 0"/></g><text x="198" y="710" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="28" font-weight="800" fill="#14253e">TAP PHONE</text><text x="198" y="746" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="22" fill="#64748b">NFC</text><text x="450" y="535" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="30" font-weight="800" fill="#14253e">OR</text><image href="'+qr+'" x="535" y="350" width="245" height="245" preserveAspectRatio="none"/><text x="657" y="645" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="26" font-weight="800" fill="#14253e">SCAN QR CODE</text><path d="M20 790H880" stroke="#e5e7eb" stroke-width="2"/><text x="450" y="842" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="800" letter-spacing="2" fill="#14253e">POWERED BY WEB<tspan fill="#c43b3b">2</tspan>TABLE</text></svg>';
 }
 function download(blob,name){const a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 $('update').addEventListener('click',render);
