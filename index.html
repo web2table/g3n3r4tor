@@ -216,12 +216,27 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 (() => {
 const $=id=>document.getElementById(id);
 function validUrl(){const v=$('url').value.trim();if(!v)return '';try{const hasProtocol=v.toLowerCase().startsWith('http://')||v.toLowerCase().startsWith('https://');const u=new URL(hasProtocol?v:'https://'+v);return (u.protocol==='http:'||u.protocol==='https:')?u.href:''}catch{return ''}}
+function setExportState(ready,label){
+ const link=$('downloadSticker');
+ link.textContent=label;
+ link.setAttribute('aria-disabled',ready?'false':'true');
+ link.style.pointerEvents=ready?'auto':'none';
+ link.style.opacity=ready?'1':'.58';
+ link.style.cursor=ready?'pointer':'not-allowed';
+ if(!ready){link.removeAttribute('href');link.removeAttribute('download')}
+}
 function render(){
  const url=validUrl(),qr=$('qrcode');qr.innerHTML='';
- if(!url){$('status').textContent='Enter a valid restaurant storefront URL.';return}
- if(typeof QRCode==='undefined'){$('status').textContent='QR library did not load. Check your internet connection and reload.';return}
- try{new QRCode(qr,{text:url,width:360,height:360,colorDark:'#000000',colorLight:'rgba(0,0,0,0)',correctLevel:QRCode.CorrectLevel.H});if(!qr.querySelector('canvas')&&!qr.querySelector('img'))throw Error('QR library did not create an image.');$('status').textContent='QR code generated for '+url}catch(e){$('status').textContent='QR generation failed: '+e.message;}
- preparePngDownload();
+ pngPrepareToken++;
+ setExportState(false,'Generate QR code to enable PNG download');
+ if(!url){$('status').textContent='Enter a valid restaurant storefront URL to generate the QR code.';return}
+ if(typeof QRCode==='undefined'){$('status').textContent='QR generator is unavailable. Check your internet connection and try again.';return}
+ try{
+  new QRCode(qr,{text:url,width:360,height:360,colorDark:'#000000',colorLight:'rgba(0,0,0,0)',correctLevel:QRCode.CorrectLevel.H});
+  if(!qr.querySelector('canvas')&&!qr.querySelector('img'))throw Error('QR image was not created.');
+  $('status').textContent='QR code ready for '+url;
+  preparePngDownload();
+ }catch(e){qr.innerHTML='';setExportState(false,'Generate QR code to enable PNG download');$('status').textContent='QR code could not be generated. Check the URL and try again.';}
 }
 function qrImageData(){const c=$('qrcode').querySelector('canvas');if(c)return c.toDataURL('image/png');const im=$('qrcode').querySelector('img');if(im)return im.src;throw Error('QR code is not ready.')}
 function esc(v){return String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -262,8 +277,10 @@ function svgString(){
 }
 let pngPrepareToken=0;
 function preparePngDownload(){
- const token=++pngPrepareToken,link=$('downloadSticker');
- link.textContent='Preparing PNG…';link.style.pointerEvents='none';
+ const link=$('downloadSticker'),qr=$('qrcode');
+ if(!qr.querySelector('canvas')&&!qr.querySelector('img')){setExportState(false,'Generate QR code to enable PNG download');$('status').textContent='Generate a QR code before downloading the sticker.';return}
+ const token=++pngPrepareToken;
+ link.textContent='Preparing sticker PNG…';link.style.pointerEvents='none';link.style.opacity='.75';
  try{
   const svgBlob=new Blob([svgString()],{type:'image/svg+xml;charset=utf-8'});
   const objectUrl=URL.createObjectURL(svgBlob),img=new Image();
@@ -273,13 +290,13 @@ function preparePngDownload(){
     const canvas=document.createElement('canvas');canvas.width=900;canvas.height=900;
     const ctx=canvas.getContext('2d');ctx.fillStyle=styleData().sticker;ctx.fillRect(0,0,900,900);ctx.drawImage(img,0,0,900,900);
     link.href=canvas.toDataURL('image/png');link.download='web2table-self-order-sticker-3x3in-300dpi.png';
-    link.textContent='Download Complete Sticker (PNG)';link.style.pointerEvents='auto';
+    setExportState(true,'Download Sticker (PNG)');
     $('status').textContent='PNG ready · 900 × 900 px · 3 × 3 inches at 300 DPI.';
-   }catch(err){link.textContent='PNG export failed — click to retry';link.style.pointerEvents='auto';$('status').textContent='PNG export failed: '+err.message;}
+   }catch(err){setExportState(false,'PNG unavailable — generate QR again');$('status').textContent='The sticker PNG could not be prepared. Generate the QR code again and retry.';}
   };
-  img.onerror=()=>{URL.revokeObjectURL(objectUrl);if(token!==pngPrepareToken)return;link.textContent='PNG export failed — click to retry';link.style.pointerEvents='auto';$('status').textContent='Could not render sticker artwork as PNG.'};
+  img.onerror=()=>{URL.revokeObjectURL(objectUrl);if(token!==pngPrepareToken)return;setExportState(false,'PNG unavailable — generate QR again');$('status').textContent='The sticker artwork could not be rendered as PNG. Generate the QR code again and retry.'};
   img.src=objectUrl;
- }catch(err){link.textContent='PNG export failed — click to retry';link.style.pointerEvents='auto';$('status').textContent='PNG export failed: '+err.message;}
+ }catch(err){setExportState(false,'PNG unavailable — generate QR again');$('status').textContent='The sticker PNG could not be prepared. Generate the QR code again and retry.';}
 }
 function download(blob,name){const a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 $('update').addEventListener('click',render);
@@ -291,8 +308,8 @@ $('resetDesign').addEventListener('click',resetToDefaults);
 applyDesign();
 $('url').addEventListener('input',render);
 const exportLink=$('downloadSticker');
-exportLink.href='#';exportLink.removeAttribute('download');
-exportLink.addEventListener('click',event=>{if(!exportLink.href.startsWith('data:image/png')){event.preventDefault();preparePngDownload();}});
+setExportState(false,'Generate QR code to enable PNG download');
+exportLink.addEventListener('click',event=>{if(exportLink.getAttribute('aria-disabled')==='true'||!exportLink.href.startsWith('data:image/png'))event.preventDefault();});
 
 render();
 })();
