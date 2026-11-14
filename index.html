@@ -218,8 +218,7 @@ function bindColor(colorId,hexId){
  c.addEventListener('input',()=>{h.value=c.value.toUpperCase();applyDesign()});
  h.addEventListener('change',()=>{if(/^#[0-9a-fA-F]{6}$/.test(h.value)){c.value=h.value;applyDesign()}else h.value=c.value.toUpperCase()});
 }
-let nfcDataUri='';
-const nfcAssetReady=fetch('nfc.png').then(r=>{if(!r.ok)throw Error('Could not load nfc.png');return r.blob()}).then(blob=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>{nfcDataUri=reader.result;resolve(nfcDataUri)};reader.onerror=()=>reject(Error('Could not read nfc.png'));reader.readAsDataURL(blob)}));
+const nfcDataUri='https://web2table.github.io/g3n3r4tor/nfc.png';
 function svgString(){
  const url=validUrl();if(!url)throw Error('Enter a valid storefront URL first.');
  const qr=qrImageData(),d=styleData(),e=esc;
@@ -233,8 +232,9 @@ $('update').addEventListener('click',render);
 applyDesign();
 $('url').addEventListener('input',render);
 const exportButton=$('png');
-nfcAssetReady.then(()=>{exportButton.disabled=false;exportButton.textContent='Download Complete Sticker'}).catch(err=>{exportButton.textContent='Sticker asset failed to load';$('status').textContent=err.message});
-exportButton.addEventListener('click',()=>{try{const data=svgString();const blob=new Blob([data],{type:'image/svg+xml;charset=utf-8'});download(blob,'web2table-self-order-sticker-3x3in.svg');$('status').textContent='Complete sticker downloaded. Open the SVG to print at 3 × 3 inches.'}catch(e){$('status').textContent='Download failed: '+e.message}});
+exportButton.disabled=false;
+exportButton.textContent='Download Complete Sticker';
+exportButton.addEventListener('click',()=>{try{const data=svgString();const blob=new Blob([data],{type:'image/svg+xml;charset=utf-8'});download(blob,'web2table-self-order-sticker-3x3in.svg');$('status').textContent='Complete sticker downloaded as SVG (3 × 3 inches).'}catch(e){$('status').textContent='Download failed: '+e.message}});
 render();
 })();
 </script>
