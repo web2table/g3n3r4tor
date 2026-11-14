@@ -150,10 +150,10 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <div class="customize-title">STICKER TEXT</div>
 <div class="field"><label for="txtTitle">Main heading</label><input id="txtTitle" type="text" value="MENU" maxlength="24"></div>
 <div class="field"><label for="txtSubtitle">Subtitle</label><input id="txtSubtitle" type="text" value="VIEW MENU &amp; SELF-ORDER" maxlength="42"></div>
-<div class="field"><label for="txtNfc">NFC action label</label><input id="txtNfc" type="text" value="TAP PHONE" maxlength="24"></div>
 
-<div class="field"><label for="txtOr">Middle separator</label><input id="txtOr" type="text" value="OR" maxlength="8"></div>
-<div class="field"><label for="txtQr">QR action label</label><input id="txtQr" type="text" value="SCAN QR CODE" maxlength="24"></div>
+
+
+
 
 <div class="customize-title">STICKER COLORS</div>
 <div class="colors">
@@ -200,7 +200,7 @@ function render(){
 function qrImageData(){const c=$('qrcode').querySelector('canvas');if(c)return c.toDataURL('image/png');const im=$('qrcode').querySelector('img');if(im)return im.src;throw Error('QR code is not ready.')}
 function esc(v){return String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function val(id){return $(id).value}
-function styleData(){return {title:val('txtTitle'),subtitle:val('txtSubtitle'),nfc:val('txtNfc'),or:val('txtOr'),qr:val('txtQr'),footerText:val('colFooterText'),header:val('colHeader'),headerText:val('colHeaderTextColor'),card:val('colCard'),border:val('colBorder'),text:val('colText'),sticker:val('colSticker'),footerBg:val('colFooter'),accent:val('colAccent')}}
+function styleData(){return {title:val('txtTitle'),subtitle:val('txtSubtitle'),nfc:'TAP PHONE',or:'OR',qr:'SCAN QR CODE',footerText:val('colFooterText'),header:val('colHeader'),headerText:val('colHeaderTextColor'),card:val('colCard'),border:val('colBorder'),text:val('colText'),sticker:val('colSticker'),footerBg:val('colFooter'),accent:val('colAccent')}}
 function applyDesign(){
  const d=styleData();
  $('previewTitle').textContent=d.title;$('previewSubtitle').textContent=d.subtitle;$('previewNfc').textContent=d.nfc;$('previewOr').textContent=d.or;$('previewQr').textContent=d.qr;
@@ -251,7 +251,7 @@ function preparePngDownload(){
 }
 function download(blob,name){const a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 $('update').addEventListener('click',render);
-['txtTitle','txtSubtitle','txtNfc','txtOr','txtQr'].forEach(id=>$(id).addEventListener('input',applyDesign));
+['txtTitle','txtSubtitle'].forEach(id=>$(id).addEventListener('input',applyDesign));
 [['colHeader','colHeaderText'],['colHeaderTextColor','colHeaderTextColorHex'],['colCard','colCardHex'],['colBorder','colBorderHex'],['colText','colTextHex'],['colSticker','colStickerHex'],['colFooter','colFooterHex'],['colAccent','colAccentHex'],['colFooterText','colFooterTextHex']].forEach(([c,h])=>bindColor(c,h));
 applyDesign();
 $('url').addEventListener('input',render);
