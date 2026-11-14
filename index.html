@@ -16,7 +16,7 @@
 /* Universal 3 x 3 inch self-order sticker */
 .sticker{width:min(100%,540px);aspect-ratio:1;background:#fff;border:5px solid #14253e;border-radius:24px;display:flex;flex-direction:column;overflow:hidden;padding:0;box-shadow:0 14px 32px #14253e18;color:#14253e}
 .menu-header{width:100%;align-self:stretch;height:32%;flex:0 0 32%;background:#14253e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding:12px 12px 18px}
-.menu-logo{display:none}.menu-title{display:none}.footer-brand{display:flex;align-items:center;justify-content:center;gap:10px;max-width:90%;height:72%;min-height:0}.footer-brand-label{white-space:nowrap}.footer-brand-logo{display:block;width:auto;height:clamp(24px,4vw,38px);max-width:42%;object-fit:contain;object-position:left center}
+.menu-logo{display:none}.menu-title{display:block;font:800 clamp(20px,3vw,30px) Manrope,sans-serif;line-height:1.08;max-width:92%;overflow-wrap:anywhere}.footer-brand{display:flex;align-items:center;justify-content:center;gap:10px;max-width:90%;height:72%;min-height:0}.footer-brand-label{white-space:nowrap}.footer-brand-logo{display:block;width:auto;height:clamp(24px,4vw,38px);max-width:42%;object-fit:contain;object-position:left center}
 .menu-subtitle{font:700 clamp(11px,1.7vw,16px) Inter,sans-serif;letter-spacing:1.1px}
 .action-area{width:100%;align-self:stretch;flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);align-items:center;justify-items:stretch;padding:5% 5%;gap:3%;background:#fff}
 .tap-action,.qr-action{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-width:0}
@@ -182,6 +182,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 
 <div class="customize-title">STICKER TEXT</div>
 
+<div class="field"><label for="txtTitle">Restaurant name</label><input id="txtTitle" type="text" value="YOUR RESTAURANT NAME" maxlength="32" placeholder="Enter restaurant name"></div>
 <div class="field"><label for="txtSubtitle">Subtitle</label><input id="txtSubtitle" type="text" value="VIEW MENU &amp; SELF-ORDER" maxlength="42"></div>
 
 
@@ -212,7 +213,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <section class="panel">
 <div class="previewhead"><h2 class="heading">Live sticker preview</h2><small>3 × 3 inches · 76.2 × 76.2 mm</small></div>
 <div class="stage"><div class="sticker" id="sticker">
-<div class="menu-header"><div class="menu-subtitle" id="previewSubtitle">VIEW MENU &amp; SELF-ORDER</div></div>
+<div class="menu-header"><div class="menu-title" id="previewTitle">YOUR RESTAURANT NAME</div><div class="menu-subtitle" id="previewSubtitle">VIEW MENU &amp; SELF-ORDER</div></div>
 <div class="action-area">
 <div class="tap-action"><div class="action-card nfc-card">
 <img class="phone-icon nfc-image" src="nfc.png" alt="NFC tap phone illustration">
@@ -221,7 +222,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <div class="or-divider" id="previewOr">OR</div>
 <div class="qr-action"><div class="action-card qr-card"><div class="qrwrap"><div id="qrcode" aria-label="QR code"></div></div><div class="action-label" id="previewQr">SCAN QR CODE</div></div></div>
 </div>
-<div class="sticker-footer"><div class="footer-brand"><span id="previewFooter" class="footer-brand-label">POWERED BY</span><img class="footer-brand-logo" src="'+logoDataUri+'" alt="Web2Table"></div></div>
+<div class="sticker-footer"><div class="footer-brand"><span id="previewFooter" class="footer-brand-label">POWERED BY</span><img class="footer-brand-logo" id="footerLogo" alt="Web2Table"></div></div>
 </div></div>
 <div class="row exports"><a class="btn" id="downloadSticker" href="#" download="web2table-self-order-sticker-3x3in.png" style="width:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;line-height:1.2;padding:0 12px;text-align:center;text-decoration:none">Download Complete Sticker (PNG)</a></div>
 <p class="note">Print production reminder: keep the QR quiet zone clear. Test the downloaded code with multiple phones before printing. NFC is programmed separately with the same URL.</p>
@@ -256,10 +257,10 @@ function render(){
 function qrImageData(){const c=$('qrcode').querySelector('canvas');if(c)return c.toDataURL('image/png');const im=$('qrcode').querySelector('img');if(im)return im.src;throw Error('QR code is not ready.')}
 function esc(v){return String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function val(id){return $(id).value}
-function styleData(){return {subtitle:val('txtSubtitle'),nfc:'TAP PHONE',or:'OR',qr:'SCAN QR CODE',footerText:val('colFooterText'),header:val('colHeader'),headerText:val('colHeaderTextColor'),card:val('colCard'),border:val('colBorder'),text:val('colText'),sticker:val('colSticker'),footerBg:val('colFooter'),}}
+function styleData(){return {title:val('txtTitle'),subtitle:val('txtSubtitle'),nfc:'TAP PHONE',or:'OR',qr:'SCAN QR CODE',footerText:val('colFooterText'),header:val('colHeader'),headerText:val('colHeaderTextColor'),card:val('colCard'),border:val('colBorder'),text:val('colText'),sticker:val('colSticker'),footerBg:val('colFooter'),}}
 function applyDesign(){
  const d=styleData();
- $('previewSubtitle').textContent=d.subtitle;$('previewNfc').textContent=d.nfc;$('previewOr').textContent=d.or;$('previewQr').textContent=d.qr;
+ $('previewTitle').textContent=d.title;$('previewSubtitle').textContent=d.subtitle;$('footerLogo').src=logoDataUri;$('previewNfc').textContent=d.nfc;$('previewOr').textContent=d.or;$('previewQr').textContent=d.qr;
  $('previewFooter').textContent='POWERED BY';
  preparePngDownload();
  const sticker=$('sticker');sticker.style.background=d.sticker;sticker.style.borderColor=d.border;sticker.style.color=d.text;
@@ -272,7 +273,7 @@ function applyDesign(){
  sticker.querySelector('.or-divider').style.color=d.text;
 }
 const DESIGN_KEY='web2table-sticker-studio-design-v1';
-const DESIGN_FIELDS=['url','txtSubtitle','colHeader','colHeaderText','colHeaderTextColor','colHeaderTextColorHex','colCard','colCardHex','colBorder','colBorderHex','colText','colTextHex','colSticker','colStickerHex','colFooter','colFooterHex','colFooterText','colFooterTextHex'];
+const DESIGN_FIELDS=['url','txtTitle','txtSubtitle','colHeader','colHeaderText','colHeaderTextColor','colHeaderTextColorHex','colCard','colCardHex','colBorder','colBorderHex','colText','colTextHex','colSticker','colStickerHex','colFooter','colFooterHex','colFooterText','colFooterTextHex'];
 function readDesign(){const data={};DESIGN_FIELDS.forEach(id=>{const el=$(id);if(el)data[id]=el.value});return data}
 function applySavedDesign(data){DESIGN_FIELDS.forEach(id=>{const el=$(id);if(el&&Object.prototype.hasOwnProperty.call(data,id))el.value=data[id]})}
 function restoreSavedDesign(){try{const raw=localStorage.getItem(DESIGN_KEY);if(raw){applySavedDesign(JSON.parse(raw));$('saveStatus').textContent='Your last saved design has been restored.'}}catch(err){$('saveStatus').textContent='Could not restore the saved design in this browser.'}}
