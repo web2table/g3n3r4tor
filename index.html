@@ -181,7 +181,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <p class="hint">Program the NFC tag separately with the exact same storefront URL. Test the QR code before printing.</p>
 
 <div class="customize-title">STICKER TEXT</div>
-<div class="field"><label for="txtTitle">Main heading</label><input id="txtTitle" type="text" value="MENU" maxlength="24"></div>
+<div class="field"><label for="txtTitle">Restaurant name</label><input id="txtTitle" type="text" value="" placeholder="Enter restaurant name" maxlength="24"></div>
 <div class="field"><label for="txtSubtitle">Subtitle</label><input id="txtSubtitle" type="text" value="VIEW MENU &amp; SELF-ORDER" maxlength="42"></div>
 
 
@@ -212,7 +212,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <section class="panel">
 <div class="previewhead"><h2 class="heading">Live sticker preview</h2><small>3 × 3 inches · 76.2 × 76.2 mm</small></div>
 <div class="stage"><div class="sticker" id="sticker">
-<div class="menu-header"><div class="menu-title" id="previewTitle">MENU</div><div class="menu-subtitle" id="previewSubtitle">VIEW MENU &amp; SELF-ORDER</div></div>
+<div class="menu-header"><div class="menu-title" id="previewTitle">RESTAURANT NAME</div><div class="menu-subtitle" id="previewSubtitle">VIEW MENU &amp; SELF-ORDER</div></div>
 <div class="action-area">
 <div class="tap-action"><div class="action-card nfc-card">
 <img class="phone-icon nfc-image" src="nfc.png" alt="NFC tap phone illustration">
@@ -259,7 +259,7 @@ function val(id){return $(id).value}
 function styleData(){return {title:val('txtTitle'),subtitle:val('txtSubtitle'),nfc:'TAP PHONE',or:'OR',qr:'SCAN QR CODE',footerText:val('colFooterText'),header:val('colHeader'),headerText:val('colHeaderTextColor'),card:val('colCard'),border:val('colBorder'),text:val('colText'),sticker:val('colSticker'),footerBg:val('colFooter'),}}
 function applyDesign(){
  const d=styleData();
- $('previewTitle').textContent=d.title;$('previewSubtitle').textContent=d.subtitle;$('previewNfc').textContent=d.nfc;$('previewOr').textContent=d.or;$('previewQr').textContent=d.qr;
+ $('previewTitle').textContent=d.title.trim()||'RESTAURANT NAME';$('previewSubtitle').textContent=d.subtitle;$('previewNfc').textContent=d.nfc;$('previewOr').textContent=d.or;$('previewQr').textContent=d.qr;
  $('previewFooter').innerHTML='POWERED BY WEB<span class="two">2</span>TABLE';
  preparePngDownload();
  const sticker=$('sticker');sticker.style.background=d.sticker;sticker.style.borderColor=d.border;sticker.style.color=d.text;
