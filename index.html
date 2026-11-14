@@ -166,6 +166,11 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <div class="field"><label for="colFooter">Footer background</label><div class="colorinput"><input id="colFooter" type="color" value="#ffffff"><input id="colFooterHex" type="text" value="#FFFFFF" maxlength="7"></div></div>
 <div class="field"><label for="colAccent">Footer accent (2)</label><div class="colorinput"><input id="colAccent" type="color" value="#c43b3b"><input id="colAccentHex" type="text" value="#C43B3B" maxlength="7"></div></div>
 <div class="field"><label for="colFooterText">Powered by text color</label><div class="colorinput"><input id="colFooterText" type="color" value="#14253e"><input id="colFooterTextHex" type="text" value="#14253E" maxlength="7"></div></div>
+<div class="row" style="margin-top:10px">
+<button class="btn" id="saveDesign" type="button">Save Design</button>
+<button class="btn secondary" id="resetDesign" type="button">Back to Default</button>
+</div>
+<p class="hint" id="saveStatus" aria-live="polite">Your saved design will be restored automatically next time you open Sticker Studio.</p>
 </div>
 </section>
 <section class="panel">
@@ -216,6 +221,13 @@ function applyDesign(){
  sticker.querySelector('.action-caption').style.color=d.text;
  sticker.querySelector('.or-divider').style.color=d.text;
 }
+const DESIGN_KEY='web2table-sticker-studio-design-v1';
+const DESIGN_FIELDS=['url','txtTitle','txtSubtitle','colHeader','colHeaderText','colHeaderTextColor','colHeaderTextColorHex','colCard','colCardHex','colBorder','colBorderHex','colText','colTextHex','colSticker','colStickerHex','colFooter','colFooterHex','colAccent','colAccentHex','colFooterText','colFooterTextHex'];
+function readDesign(){const data={};DESIGN_FIELDS.forEach(id=>{const el=$(id);if(el)data[id]=el.value});return data}
+function applySavedDesign(data){DESIGN_FIELDS.forEach(id=>{const el=$(id);if(el&&Object.prototype.hasOwnProperty.call(data,id))el.value=data[id]})}
+function restoreSavedDesign(){try{const raw=localStorage.getItem(DESIGN_KEY);if(raw){applySavedDesign(JSON.parse(raw));$('saveStatus').textContent='Your last saved design has been restored.'}}catch(err){$('saveStatus').textContent='Could not restore the saved design in this browser.'}}
+function saveCurrentDesign(){try{localStorage.setItem(DESIGN_KEY,JSON.stringify(readDesign()));$('saveStatus').textContent='Design saved on this device. It will be restored when you return.';$('status').textContent='Your sticker design has been saved.'}catch(err){$('saveStatus').textContent='Save failed. Your browser may be blocking local storage.'}}
+function resetToDefaults(){try{localStorage.removeItem(DESIGN_KEY)}catch{}DESIGN_FIELDS.forEach(id=>{const el=$(id);if(el){const initial=el.getAttribute('value');if(initial!==null)el.value=initial}});$('saveStatus').textContent='Default design restored. Your previous saved design was cleared.';applyDesign();render()}
 function bindColor(colorId,hexId){
  const c=$(colorId),h=$(hexId);
  c.addEventListener('input',()=>{h.value=c.value.toUpperCase();applyDesign()});
@@ -253,6 +265,9 @@ function download(blob,name){const a=document.createElement('a'),u=URL.createObj
 $('update').addEventListener('click',render);
 ['txtTitle','txtSubtitle'].forEach(id=>$(id).addEventListener('input',applyDesign));
 [['colHeader','colHeaderText'],['colHeaderTextColor','colHeaderTextColorHex'],['colCard','colCardHex'],['colBorder','colBorderHex'],['colText','colTextHex'],['colSticker','colStickerHex'],['colFooter','colFooterHex'],['colAccent','colAccentHex'],['colFooterText','colFooterTextHex']].forEach(([c,h])=>bindColor(c,h));
+restoreSavedDesign();
+$('saveDesign').addEventListener('click',saveCurrentDesign);
+$('resetDesign').addEventListener('click',resetToDefaults);
 applyDesign();
 $('url').addEventListener('input',render);
 const exportLink=$('downloadSticker');
