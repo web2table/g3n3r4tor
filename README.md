@@ -21,3 +21,6 @@ This is a static frontend prototype. It does not connect to Web2Table SaaS, Supa
 - Verify SVG/PNG exports at intended physical dimensions.
 - Bundle dependencies locally for reliable offline generation.
 - Add hosting-layer authentication before exposing the tool.
+
+
+Pages rebuild trigger: 2026-11-14.
