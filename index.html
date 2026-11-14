@@ -204,6 +204,7 @@ function applyDesign(){
  const d=styleData();
  $('previewTitle').textContent=d.title;$('previewSubtitle').textContent=d.subtitle;$('previewNfc').textContent=d.nfc;$('previewOr').textContent=d.or;$('previewQr').textContent=d.qr;
  $('previewFooter').textContent=d.footer;
+ preparePngDownload();
  const sticker=$('sticker');sticker.style.background=d.sticker;sticker.style.borderColor=d.border;sticker.style.color=d.text;
  const header=sticker.querySelector('.menu-header');header.style.background=d.header;header.style.color=d.headerText;
  sticker.querySelectorAll('.action-card').forEach(el=>{el.style.background=d.card;el.style.borderColor=d.border;el.style.color=d.text});
