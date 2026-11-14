@@ -61,6 +61,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 <div class="field"><label for="primary">Primary color</label><div class="colorinput"><input id="primary" type="color" value="#14253E"><input id="primaryText" type="text" value="#14253E" maxlength="7"></div></div>
 <div class="field"><label for="accent">Accent color</label><div class="colorinput"><input id="accent" type="color" value="#C99A32"><input id="accentText" type="text" value="#C99A32" maxlength="7"></div></div>
 </div>
+<div class="field"><label for="stickerBg">Sticker background color</label><div class="colorinput"><input id="stickerBg" type="color" value="#FFFFFF"><input id="stickerBgText" type="text" value="#FFFFFF" maxlength="7"></div><div class="hint">Choose the sticker's base color. White is recommended for strong QR contrast.</div></div>
 <div class="field"><label for="instruction">Instruction text</label><input id="instruction" type="text" value="SCAN OR TAP"></div>
 <div class="field"><label for="instructionSub">Instruction subtext</label><input id="instructionSub" type="text" value="TO VIEW MENU"></div>
 <button class="btn" id="update" type="button">Update preview</button><div class="status" id="status" aria-live="polite"></div>
@@ -85,7 +86,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 const $=id=>document.getElementById(id);
 let logoData='';
 function syncColor(p,t){$(p).addEventListener('input',()=>{$(t).value=$(p).value.toUpperCase();render()});$(t).addEventListener('change',()=>{if(/^#[0-9a-f]{6}$/i.test($(t).value)){$(p).value=$(t).value;render()}else $(t).value=$(p).value.toUpperCase()})}
-syncColor('primary','primaryText');syncColor('accent','accentText');
+syncColor('primary','primaryText');syncColor('accent','accentText');syncColor('stickerBg','stickerBgText');
 $('logo').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(f.size>5*1024*1024){$('status').textContent='Logo is larger than 5 MB.';e.target.value='';return}const reader=new FileReader();reader.onload=()=>{logoData=reader.result;render()};reader.readAsDataURL(f)});
 $('removeLogo').addEventListener('click',()=>{logoData='';$('logo').value='';render()});
 ['name','tagline','url','instruction','instructionSub'].forEach(id=>$(id).addEventListener('input',render));
@@ -95,7 +96,7 @@ function render(){
  $('namePreview').textContent=$('name').value.trim()||'Restaurant Name';
  $('tagPreview').textContent=$('tagline').value.trim();$('tagPreview').style.display=$('tagline').value.trim()?'block':'none';
  $('instructionPreview').textContent=$('instruction').value;$('instructionSubPreview').textContent=$('instructionSub').value;
- const primary=$('primary').value,accent=$('accent').value;$('sticker').style.borderColor=primary;$('instructionPreview').style.color=primary;$('instructionSubPreview').style.color=primary;$('footerpill').style.borderColor=accent;
+ const primary=$('primary').value,accent=$('accent').value,bg=$('stickerBg').value;$('sticker').style.borderColor=primary;$('sticker').style.backgroundColor=bg;$('instructionPreview').style.color=primary;$('instructionSubPreview').style.color=primary;$('footerpill').style.borderColor=accent;
  const img=$('logoPreview');if(logoData){img.src=logoData;img.style.display='block'}else{img.removeAttribute('src');img.style.display='none'}
  const url=validUrl(),qr=$('qrcode');qr.innerHTML='';
  if(!url){$('status').textContent='Enter a valid storefront URL to generate its QR code.';return}
@@ -106,12 +107,12 @@ function render(){
 function svgString(size=1200){
  const url=validUrl();if(!url)throw Error('Enter a valid storefront URL first.');
  const qr=qrImageData();const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
- const primary=$('primary').value,accent=$('accent').value,name=esc($('name').value||'Restaurant Name'),tag=esc($('tagline').value),ins=esc($('instruction').value),sub=esc($('instructionSub').value);
+ const primary=$('primary').value,accent=$('accent').value,bg=$('stickerBg').value,name=esc($('name').value||'Restaurant Name'),tag=esc($('tagline').value),ins=esc($('instruction').value),sub=esc($('instructionSub').value);
  let logo=logoData?'<image href="'+logoData+'" x="420" y="115" width="360" height="120" preserveAspectRatio="xMidYMid meet"/>':'';
  const nameY=logoData?300:210,tagY=nameY+58;
  const qrY=tag?390:350;
  const tapY=1005;
- return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="'+size+'" height="'+size+'" viewBox="0 0 1200 1200"><rect width="1200" height="1200" fill="#fff"/><rect x="15" y="15" width="1170" height="1170" rx="65" fill="none" stroke="'+primary+'" stroke-width="12"/>'+logo+'<text x="600" y="'+nameY+'" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="72" font-weight="800" fill="'+primary+'">'+name+'</text>'+(tag?'<text x="600" y="'+tagY+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" fill="#6b7280">'+tag+'</text>':'')+'<image href="'+qr+'" x="375" y="'+qrY+'" width="450" height="450" preserveAspectRatio="none"/><text x="600" y="900" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="48" font-weight="800" letter-spacing="2" fill="'+primary+'">'+ins+'</text><text x="600" y="950" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="600" letter-spacing="2" fill="'+primary+'">'+sub+'</text><text x="600" y="'+tapY+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" fill="#68778b">◉  CONTACTLESS · NFC ENABLED</text><rect x="365" y="1050" width="470" height="62" rx="31" fill="none" stroke="'+accent+'" stroke-width="2"/><text x="600" y="1090" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="2" fill="'+primary+'">POWERED BY WEB<tspan fill="#c43b3b">2</tspan>TABLE</text></svg>';
+ return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="'+size+'" height="'+size+'" viewBox="0 0 1200 1200"><rect width="1200" height="1200" fill="'+bg+'"/><rect x="15" y="15" width="1170" height="1170" rx="65" fill="none" stroke="'+primary+'" stroke-width="12"/>'+logo+'<text x="600" y="'+nameY+'" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="72" font-weight="800" fill="'+primary+'">'+name+'</text>'+(tag?'<text x="600" y="'+tagY+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" fill="#6b7280">'+tag+'</text>':'')+'<image href="'+qr+'" x="375" y="'+qrY+'" width="450" height="450" preserveAspectRatio="none"/><text x="600" y="900" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="48" font-weight="800" letter-spacing="2" fill="'+primary+'">'+ins+'</text><text x="600" y="950" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="600" letter-spacing="2" fill="'+primary+'">'+sub+'</text><text x="600" y="'+tapY+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="24" fill="#68778b">◉  CONTACTLESS · NFC ENABLED</text><rect x="365" y="1050" width="470" height="62" rx="31" fill="none" stroke="'+accent+'" stroke-width="2"/><text x="600" y="1090" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="2" fill="'+primary+'">POWERED BY WEB<tspan fill="#c43b3b">2</tspan>TABLE</text></svg>';
 }
 function qrImageData(){const c=$('qrcode').querySelector('canvas');if(c)return c.toDataURL('image/png');const im=$('qrcode').querySelector('img');if(im)return im.src;throw Error('QR code is not ready.');}
 function download(blob,name){const a=document.createElement('a');const u=URL.createObjectURL(blob);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
