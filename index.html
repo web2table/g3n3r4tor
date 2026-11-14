@@ -181,7 +181,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#e3eaf4 0%,transparent 38%),#f
 </div>
 <div class="sticker-footer"><span id="previewFooter">POWERED BY WEB<span class="two">2</span>TABLE</span></div>
 </div></div>
-<div class="row exports"><button class="btn" id="png" type="button" style="width:100%">Download Complete Sticker</button></div>
+<div class="row exports"><a class="btn" id="downloadSticker" href="#" download="web2table-self-order-sticker-3x3in.svg" style="width:100%;display:block;text-align:center;text-decoration:none">Download Complete Sticker</a></div>
 <p class="note">Print production reminder: keep the QR quiet zone clear. Test the downloaded code with multiple phones before printing. NFC is programmed separately with the same URL.</p>
 </section>
 </main>
@@ -231,10 +231,9 @@ $('update').addEventListener('click',render);
 [['colHeader','colHeaderText'],['colHeaderTextColor','colHeaderTextColorHex'],['colCard','colCardHex'],['colBorder','colBorderHex'],['colText','colTextHex'],['colSticker','colStickerHex'],['colFooter','colFooterHex'],['colAccent','colAccentHex']].forEach(([c,h])=>bindColor(c,h));
 applyDesign();
 $('url').addEventListener('input',render);
-const exportButton=$('png');
-exportButton.disabled=false;
-exportButton.textContent='Download Complete Sticker';
-exportButton.addEventListener('click',()=>{try{const data=svgString();const blob=new Blob([data],{type:'image/svg+xml;charset=utf-8'});download(blob,'web2table-self-order-sticker-3x3in.svg');$('status').textContent='Complete sticker downloaded as SVG (3 × 3 inches).'}catch(e){$('status').textContent='Download failed: '+e.message}});
+const exportLink=$('downloadSticker');
+let exportObjectUrl='';
+exportLink.addEventListener('click',event=>{try{const data=svgString();const blob=new Blob([data],{type:'image/svg+xml;charset=utf-8'});if(exportObjectUrl)URL.revokeObjectURL(exportObjectUrl);exportObjectUrl=URL.createObjectURL(blob);exportLink.href=exportObjectUrl;$('status').textContent='Your complete 3 × 3 inch sticker is downloading.';setTimeout(()=>{if(exportObjectUrl){URL.revokeObjectURL(exportObjectUrl);exportObjectUrl=''}},60000)}catch(e){event.preventDefault();$('status').textContent='Download failed: '+e.message}});
 render();
 })();
 </script>
